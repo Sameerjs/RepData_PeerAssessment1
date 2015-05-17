@@ -1,20 +1,7 @@
-#Reproducible Research: Peer Assessment 1
-
----
-title: "PA1_template.Rmd"
-author: "Sameer Salgaonkar"
-date: "Sunday, May 17, 2015"
-output: html_document
----
-
-
-## Loading and preprocessing the data
-
-```{r, echo=TRUE}
+## Loading and preprocessing the data  
 
 ## setwd(""D:/Sameers/SamProjs/myR"")
 setwd("D:/Sameers/SamProjs/myR")
-## load required libraries
 library(plyr)
 library(ggplot2)
 library(lattice)
@@ -28,12 +15,6 @@ ACT$date <- as.Date(ACT$date, "%Y-%m-%d")
 ## remove NA
 ACT.na <- na.omit(ACT) 
 
-```
-
-
-##What is mean total number of steps taken per day?
-
-```{r, echo=TRUE}
 # sum steps by date
 ACT.steps <- rowsum(ACT.na$steps, format(ACT.na$date, '%Y-%m-%d')) 
 ACT.steps <- data.frame(ACT.steps) 
@@ -49,37 +30,25 @@ mean(ACT.steps$steps);
 # get the median
 median(ACT.steps$steps) 
 
+## What is the average daily activity pattern?
 
-```
-
-
-##What is the average daily activity pattern?
-
-```{r, echo=TRUE}
 # Calculate average steps for each of 5-minute interval during a 24-hour period
 MinInt.mean.steps <- ddply(ACT.na,~interval, summarise, mean=mean(steps))
 
 ## plot
 qplot(x=interval, y=mean, data = MinInt.mean.steps,  geom = "line",
       xlab="5 Minute Interval",
-      ylab="Step Count", 
+      ylab="Step Count", col ="blue",
       main="Avg No. of Steps Taken Across All Days"
 )
 
 ## get mean
 MinInt.mean.steps[which.max(MinInt.mean.steps$mean), ]
-  
 
-```
-
-##Imputing missing values
-
-```{r, echo=TRUE}
-## find missing values
+## Imputing missing values
 ACT_NA <- sum(is.na(ACT))
 ACT_NA
 
-## get avg
 Avgsteps <- aggregate(steps ~ interval, data = ACT, FUN = mean)
 fillNA <- numeric()
 
@@ -108,14 +77,7 @@ mean(StepsTotal2$steps)
 ## get median
 median(StepsTotal2$steps)
 
-  
-
-```
-
-
-##Are there differences in activity patterns between weekdays and weekends?
-
-```{r, echo=TRUE}
+## Are there differences in activity patterns between weekdays and weekends?
 
 ## classify data for weekday & weekends
 day <- weekdays(ACT$date)
@@ -139,6 +101,5 @@ names(stepsByDay) <- c("interval", "daylevel", "steps")
 xyplot(steps ~ interval | daylevel, stepsByDay, type = "l", layout = c(1, 2), 
        xlab = "Interval", ylab = "Number of steps")
 
-```
 
-### Conlcusion: More activity is seen at the weekends rather than the weekdays
+
